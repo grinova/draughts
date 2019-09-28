@@ -1,23 +1,28 @@
 import { combineReducers } from 'redux'
 import * as actions from '../actions'
+import { OPPONENT_NAME } from '../../common/actions'
+
+function username(state = '', action) {
+  switch (action.type) {
+    case actions.USER_NAME_CHANGE:
+      return action.username
+    default:
+      return state
+  }
+}
 
 function opponent(state = '', action) {
   switch (action.type) {
-    case actions.PLAY_GAME_SUCC:
-      console.log('Play game succ', action.opponent)
+    case OPPONENT_NAME:
       return action.opponent
-    case actions.PLAY_GAME_FAIL:
-      console.log('Play game fail', action.opponent)
-      return action.opponent
-    case actions.PLAY_GAME:
-      console.log('Play game', action.opponent)
     default:
       return state
   }
 }
 
 const rootReducer = combineReducers({
-  opponent
+  username,
+  opponent,
 })
 
 export default rootReducer
