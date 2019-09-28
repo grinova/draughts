@@ -18,3 +18,14 @@ render(
   </Provider>,
   document.getElementById('root')
 )
+
+import io from 'socket.io-client'
+const url = new URL(window.location.href)
+url.pathname = ''
+url.search = ''
+var socket = io(url.href)
+socket.on('connect', () => {
+  socket.emit('my-client-event', { text: 'Event from client' })
+})
+socket.on('my-server-event', (data) => { console.log(data) })
+socket.on('disconnect', () => {})
