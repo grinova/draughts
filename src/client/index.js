@@ -4,7 +4,7 @@ import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
 import createSagaMiddleware from 'redux-saga'
-import App from './components/app'
+import App from './containers/app'
 import rootReducer from './reducers'
 import rootSaga from './sagas'
 
