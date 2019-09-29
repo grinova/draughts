@@ -12,6 +12,9 @@ export default function configureStore() {
   const socket = io(url.href)
   const socketIoMiddleware = createSocketIoMiddleware(socket, "server/")
   const store = createStore(rootReducer, applyMiddleware(socketIoMiddleware))
-  store.dispatch(userNameChange(getUserName(window.location.href, 'username')))
+  const username = getUserName(window.location.href, 'username')
+  if (username != '') {
+    store.dispatch(userNameChange(username))
+  }
   return store
 }

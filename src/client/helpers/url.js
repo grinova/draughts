@@ -3,4 +3,5 @@ export function getUserName(href, usernameParamId) {
   if (url.searchParams.has(usernameParamId)) {
     return url.searchParams.get(usernameParamId)
   }
+  return ''
 }
