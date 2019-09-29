@@ -1,15 +1,13 @@
 import { combineReducers } from 'redux'
+import { handleAction } from 'redux-actions'
 import * as actions from '../actions'
 import { OPPONENT_NAME } from '../../common/actions'
 
-function username(state = '', action) {
-  switch (action.type) {
-    case actions.USER_NAME_CHANGE:
-      return action.username
-    default:
-      return state
-  }
-}
+const username = handleAction(
+  actions.userNameChange,
+  (state, { payload: username }) => username,
+  ''
+)
 
 function opponent(state = '', action) {
   switch (action.type) {
