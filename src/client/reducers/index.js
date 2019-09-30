@@ -1,12 +1,28 @@
 import { combineReducers } from 'redux'
 import { handleAction } from 'redux-actions'
-import * as actions from '../actions'
-import { OPPONENT_NAME } from '../../common/actions'
+import { USER_NAME_CHANGE } from '../actions'
+import {
+  SESSION_ID,
+  STATUS,
+  OPPONENT_NAME
+} from '../../common/actions'
 
 const username = handleAction(
-  actions.userNameChange,
+  USER_NAME_CHANGE,
   (state, { payload: username }) => username,
   ''
+)
+
+const sessionId = handleAction(
+  SESSION_ID,
+  (state, { payload: id }) => id,
+  ''
+)
+
+const status = handleAction(
+  STATUS,
+  (state, { payload: status }) => status,
+  'stand-by'
 )
 
 function opponent(state = '', action) {
@@ -21,6 +37,8 @@ function opponent(state = '', action) {
 const rootReducer = combineReducers({
   username,
   opponent,
+  sessionId,
+  status,
 })
 
 export default rootReducer

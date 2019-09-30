@@ -28,6 +28,8 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "socket.io": "^2.3.0"
+    "mongodb": "^3.3.2",
+    "socket.io": "^2.3.0",
+    "uuid": "^3.3.3"
   }
 }

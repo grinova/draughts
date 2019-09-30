@@ -1,17 +1,28 @@
+const createAction = require('redux-actions').createAction
+
 const PLAY_GAME = 'server/play-game'
-const OPPONENT_NAME = 'client/opponent-name'
+const SESSION_ID = 'client/session-id'
+const STATUS = 'client/status'
+const OPPONENT = 'client/opponent-name'
 
 function playGame(username) {
   return { type: PLAY_GAME, username }
 }
 
-function opponentName(opponent) {
-  return { type: OPPONENT_NAME, opponent }
+const sessionId = createAction(SESSION_ID)
+const status = createAction(STATUS)
+
+function opponent(opponent) {
+  return { type: OPPONENT, opponent }
 }
 
 module.exports = {
   PLAY_GAME,
-  OPPONENT_NAME,
-  opponentName,
-  playGame
+  SESSION_ID,
+  STATUS,
+  OPPONENT,
+  playGame,
+  sessionId,
+  status,
+  opponent
 }
