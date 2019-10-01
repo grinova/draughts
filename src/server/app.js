@@ -1,56 +1,49 @@
+const immutable = require('immutable')
 const express = require('express')
 const socket = require('socket.io')
 const mongodb = require('mongodb')
 const uuid = require('uuid')
 
-const actions = require('../common/actions')
+const createDbAccessor = require('./db')
+const createWebAdapter = require('./adapters/web-adapter')
+const createActionHandler = require('./action-handler')
 
 const PORT = process.env.PORT || 8080
 
-mongodb.MongoClient.connect(
-  'mongodb://localhost:27017',
-  { useNewUrlParser: true, useUnifiedTopology: true },
-  (err, client) => {
-    const db = client.db('checkers')
+;(async function() {
+  const client = await mongodb.MongoClient.connect(
+    'mongodb://localhost:27017',
+    { useNewUrlParser: true, useUnifiedTopology: true }
+  )
+
+  const db = client.db('checkers')
+  const dbAccessor = createDbAccessor(db, uuid)
+
+  {
     const sessions = db.collection('sessions')
     const games = db.collection('games')
-
-    const app = express()
-    const server = require('http').Server(app)
-    const io = socket(server)
-
-    server.listen(PORT)
-    app.use(express.static('static'))
-
-    io.on('connection', (socket) => {
-      const id = uuid()
-      socket.on('disconnect', (socket) => {
-        sessions.remove({ id })
-      })
-      socket.on('action', (action) => {
-        console.log(action)
-        if (action.type === actions.PLAY_GAME) {
-          const { username } = action
-          socket.emit('action', actions.sessionId(id))
-          sessions.findOneAndUpdate(
-            { status: 'stand-by' },
-            { '$set': { status: 'active' } },
-            (err, res) => {
-              const opponent = res.value
-              const status = opponent == null ? 'stand-by' : 'active'
-              const session = { username, id, status }
-              sessions.insertOne(session, (error, res) => {
-                socket.emit('action', actions.status(status))
-                if (status == 'active') {
-                  games.insertOne({ players: [session.id, opponent.id] }, (err, res) => {
-                    console.log(`Start game between ${session.username} and ${opponent.username} players`)
-                  })
-                }
-              })
-            }
-          )
-        }
-      })
-    })
+    await sessions.deleteMany({})
+    await games.deleteMany({})
   }
-)
+
+  const app = express()
+  const server = require('http').Server(app)
+  const io = socket(server)
+
+  server.listen(PORT)
+  app.use(express.static('static'))
+
+  let adapters = new immutable.Map()
+
+  io.on('connection', (socket) => {
+    const id = uuid()
+    const adapter = createWebAdapter(socket)
+    adapter.init(id)
+    adapters = adapters.set(id, adapter)
+    const getAdapter = opponentId => adapters.get(opponentId)
+    socket.on('disconnect', (socket) => {
+      adapters = adapters.remove(id)
+    })
+    socket.on('action', createActionHandler(id, dbAccessor, adapter, getAdapter))
+  })
+})()
