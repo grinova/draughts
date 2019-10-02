@@ -1,4 +1,3 @@
-import immutable from 'immutable'
 import React from 'react'
 import { connect } from 'react-redux'
 import { userNameChange } from '../actions'
@@ -7,17 +6,19 @@ import { playGame, userStep } from '../../common/actions'
 
 class App extends React.Component {
   state = {
-    chain: new immutable.List()
+    move: []
   }
 
   handleCellOnClick = (i, j) => {
-    const { chain } = this.state
-    const last = chain.last()
-    if (last && last.i == i && last.j == j) {
-      this.props.onStep(chain.toArray())
-    } else {
-      this.setState({ chain: this.state.chain.push({ i, j })})
-    }
+    const { move } = this.state
+    move.push({ row: i, column: j })
+    this.setState({ move }, () => {
+      const { move } = this.state
+      if (move.length >= 2) {
+        this.props.onStep({ from: move[0], to: move[1] })
+        this.setState({ move: [] })
+      }
+    })
   }
 
   render() {

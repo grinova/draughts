@@ -17,7 +17,13 @@ function createActionHandler(id, db, userAdapter, getAdapter) {
           }
         }
         break;
-      case actions.STEP:
+      case actions.USER_STEP:
+        const { error, state } = await db.move(id, action.payload)
+        if (error) {
+          console.log(error)
+          return
+        }
+        userAdapter.move(state)
         break;
     }
   }

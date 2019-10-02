@@ -19,12 +19,10 @@ const PORT = process.env.PORT || 8080
   const db = client.db('checkers')
   const dbAccessor = createDbAccessor(db, uuid)
 
-  {
-    const sessions = db.collection('sessions')
-    const games = db.collection('games')
-    await sessions.deleteMany({})
-    await games.deleteMany({})
-  }
+  const sessions = db.collection('sessions')
+  const games = db.collection('games')
+  await sessions.deleteMany({})
+  await games.deleteMany({})
 
   const app = express()
   const server = require('http').Server(app)
@@ -43,6 +41,8 @@ const PORT = process.env.PORT || 8080
     const getAdapter = opponentId => adapters.get(opponentId)
     socket.on('disconnect', (socket) => {
       adapters = adapters.remove(id)
+      sessions.deleteMany({ id })
+      games.deleteMany({})
     })
     socket.on('action', createActionHandler(id, dbAccessor, adapter, getAdapter))
   })

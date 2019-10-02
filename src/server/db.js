@@ -1,3 +1,5 @@
+const makeMove = require('./game/make-move')
+
 function initiamGameState() {
   return {
     score: [0, 0],
@@ -46,12 +48,21 @@ function createDbAccessor(db, uuid) {
       return { user }
     }
   }
-  async function step(id, chain) {
-    console.log(chain)
+  async function move(id, move) {
+    const session = await sessions.findOne({ id })
+    const { gameId } = session
+    const game = await games.findOne({ id: gameId })
+    const { error, field } = makeMove(move, game.state.field)
+    if (error) {
+      return { error }
+    }
+    game.state.field = field
+    await games.findOneAndUpdate({ id: gameId }, { '$set': { state: game.state }})
+    return { state: game.state }
   }
   return {
     play,
-    step
+    move
   }
 }
 

@@ -22,6 +22,10 @@ function createWebAdapter(socket) {
     emit(actions.gameState(state))
   }
 
+  function move(state) {
+    emit(actions.gameState(state))
+  }
+
   function error(message) {
     emit(actions.error(message))
   }
@@ -31,6 +35,7 @@ function createWebAdapter(socket) {
     init,
     connect,
     play,
+    move,
     error
   }
 }
