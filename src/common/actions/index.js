@@ -7,6 +7,8 @@ const OPPONENT = 'client/opponent-name'
 const USER_STEP = 'server/user-step'
 const STEP = 'client/step'
 const GAME_STATE = 'client/game-state'
+const LEAVE = 'server/leave-game'
+const STATE = 'client/state'
 const ERROR = 'client/error'
 
 function playGame(username) {
@@ -23,6 +25,8 @@ function opponent(opponent) {
 const userStep = createAction(USER_STEP)
 const step = createAction(STEP)
 const gameState = createAction(GAME_STATE)
+const leave = createAction(LEAVE)
+const state = createAction(STATE)
 const error = createAction(ERROR)
 
 module.exports = {
@@ -33,6 +37,8 @@ module.exports = {
   USER_STEP,
   STEP,
   GAME_STATE,
+  LEAVE,
+  STATE,
   ERROR,
   playGame,
   sessionId,
@@ -41,5 +47,7 @@ module.exports = {
   userStep,
   step,
   gameState,
+  leave,
+  state,
   error
 }

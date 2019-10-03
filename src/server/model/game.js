@@ -22,9 +22,19 @@ class Game {
     this.updateStateNotify()
   }
 
+  leave(sessionID) {
+    for (let id in this.sessions) {
+      const session = this.sessions[id]
+      if (id != sessionID) {
+        session.opponentLeave()
+      }
+    }
+    this.store.removeGame(this.id)
+  }
+
   updateStateNotify() {
-    for (let session of this.sessions) {
-      session.updateState(this.state)
+    for (let id in this.sessions) {
+      this.sessions[id].updateState(this.state)
     }
   }
 }

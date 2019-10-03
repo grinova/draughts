@@ -1,8 +1,9 @@
 const uuid = require('uuid')
 
 class Session {
-  constructor(id, /* username, status, meta,  */store, notifier) {
+  constructor(id, /* username, status, meta,  */game, store, notifier) {
     this.id = id
+    this.game = game
     // this.username = username
     // this.status = status
     // this.meta = meta
@@ -12,24 +13,48 @@ class Session {
 
   async play() {
     this.notifier.wait()
-    const opponentSession = await this.store.findStandbySessionForPlayer(this.id)
-    if (opponentSession) {
+    const opponentSessionData = await this.store.findStandbySessionForPlayer(this.id)
+    if (opponentSessionData) {
       await this.store.updateSessionStatus(this.id, 'active')
-      await this.store.updateSessionStatus(opponentSession.id, 'active')
+      await this.store.updateSessionStatus(opponentSessionData.id, 'active')
       const gameID = uuid()
-      await this.store.createGame(gameID, this.id, opponentSession.id)
-      this.gameID = gameID
-      opponentSession.gameID = gameID
-      await this.store.linkSession(this.id, gameID)
-      await this.store.linkSession(opponentSession.id, gameID)
-      return gameID
+      const opponentSessionID = opponentSessionData.id
+      await this.store.createGame(gameID, this.id, opponentSessionID)
+      return { opponentSessionID, gameID }
     } else {
       this.store.updateSessionStatus(this.id, 'stand-by')
     }
   }
 
+  makeMove(move) {
+    this.game.makeMove(move)
+  }
+
+  leave() {
+    if (this.game) {
+      this.game.leave(this.id)
+      this.game = null
+      this._standBy()
+    }
+  }
+
+  opponentLeave() {
+    this._standBy()
+    this.notifier.opponentLeave()
+  }
+
+  async join(game) {
+    this.game = game
+    await this.store.joinGame(this.id, this.game.id)
+  }
+
   updateState(state) {
     this.notifier.state(state)
+  }
+
+  async _standBy() {
+    await this.store.leaveGame(this.id)
+    await this.store.updateSessionStatus(this.id, 'stand-by')
   }
 }
 

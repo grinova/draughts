@@ -40,20 +40,24 @@ const PORT = process.env.PORT || 8080
       return
     }
     const session = await store.getSession(id)
-    if (!session) {
-      return
-    }
+    if (!session) return
     // const { username, status, meta } = session
-    return new Session(id, /* username, status, meta,  */store, notifier)
+    const game = null
+    return new Session(id, /* username, status, meta,  */game, store, notifier)
   })
 
   const gameManager = new Manager(async (id) => {
     const game = await store.getGame(id)
-    const sessions = await Promise.all(
-      game.players.map(id => sessionManager.get(id)))
-    if (sessions.every(s => s != null)) {
-      return new Game(id, game.state, store, sessions)
+    if (!game) return
+    const sessions = {}
+    for (let id of game.players) {
+      const session = await sessionManager.get(id)
+      if (!session) {
+        return
+      }
+      sessions[id] = session
     }
+    return new Game(id, game.state, store, sessions)
   })
 
   io.on('connection', (socket) => {

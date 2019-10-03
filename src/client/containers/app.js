@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { userNameChange } from '../actions'
 import Field from '../components/field'
-import { playGame, userStep } from '../../common/actions'
+import { playGame, userStep, leave } from '../../common/actions'
 
 class App extends React.Component {
   state = {
@@ -30,21 +30,28 @@ class App extends React.Component {
           defaultValue={this.props.username}
           onChange={(e) => this.props.userNameOnChange(e.target.value)}/>
         <button onClick={() => this.props.onPlay(this.props.username)}>Play</button>
+        <button onClick={this.props.onLeave}>Leave</button>
         <Field data={this.props.field} onClick={this.handleCellOnClick}/>
+        <div>State: {this.props.state}</div>
       </React.Fragment>
     )
   }
 }
 
 function mapStateToProps(state) {
-  return { username: state.username, field: state.gameState.field }
+  return {
+    username: state.username,
+    field: state.gameState.field,
+    state: state.state
+  }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     userNameOnChange: (username) => dispatch(userNameChange(username)),
     onPlay: (username) => dispatch(playGame(username)),
-    onStep: (chain) => dispatch(userStep(chain))
+    onStep: (chain) => dispatch(userStep(chain)),
+    onLeave: () => dispatch(leave())
   }
 }
 

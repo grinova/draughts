@@ -17,6 +17,10 @@ class SocketNotifier {
     this.emit(actions.gameState(state))
   }
 
+  opponentLeave() {
+    this.emit(actions.state('opponent-leave'))
+  }
+
   emit(payload) {
     this.socket.emit('action', payload)
   }

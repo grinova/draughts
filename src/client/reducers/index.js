@@ -5,7 +5,8 @@ import {
   SESSION_ID,
   STATUS,
   OPPONENT_NAME,
-  GAME_STATE
+  GAME_STATE,
+  STATE
 } from '../../common/actions'
 
 const username = handleAction(
@@ -32,6 +33,12 @@ const gameState = handleAction(
   { score: [0, 0], field: [] }
 )
 
+const state = handleAction(
+  STATE,
+  (state, { payload }) => payload,
+  ''
+)
+
 function opponent(state = '', action) {
   console.log(action)
   switch (action.type) {
@@ -47,7 +54,8 @@ const rootReducer = combineReducers({
   opponent,
   sessionId,
   status,
-  gameState
+  gameState,
+  state
 })
 
 export default rootReducer

@@ -34,8 +34,8 @@ class Store {
     return this.sessions.removeOne({ id })
   }
 
-  updateSession(id, username, status, gameId, meta) {
-    const updateSession = { '$set': { username, status, meta, gameId } }
+  updateSession(id, username, status, gameID, meta) {
+    const updateSession = { '$set': { username, status, meta, gameID } }
     return this.sessions.findOneAndUpdate({ id }, updateSession)
   }
 
@@ -47,12 +47,12 @@ class Store {
     return this.sessions.findOne({ id })
   }
 
-  linkSession(id, gameID) {
+  joinGame(id, gameID) {
     return this.sessions.updateOne({ id }, { '$set': { gameID }})
   }
 
-  unlinkSession(id) {
-    return this.sessions.updateOne({ id }, { '$unset': { gameId: 1 }})
+  leaveGame(id) {
+    return this.sessions.updateOne({ id }, { '$unset': { gameID: 1 }})
   }
 
   createGame(id, firstPlayerID, secondPlayerID) {
