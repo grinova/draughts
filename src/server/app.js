@@ -1,12 +1,14 @@
-const immutable = require('immutable')
+const uuid = require('uuid')
 const express = require('express')
 const socket = require('socket.io')
 const mongodb = require('mongodb')
-const uuid = require('uuid')
 
-const createDbAccessor = require('./db')
-const createWebAdapter = require('./adapters/web-adapter')
-const createActionHandler = require('./action-handler')
+const Manager = require('./manager')
+const Game = require('./model/game')
+const Session = require('./model/session')
+const SocketNotifier = require('./notifiers/socket')
+const SocketEventHandler = require('./event-handlers/socket-event')
+const Store = require('./store')
 
 const PORT = process.env.PORT || 8080
 
@@ -17,12 +19,11 @@ const PORT = process.env.PORT || 8080
   )
 
   const db = client.db('checkers')
-  const dbAccessor = createDbAccessor(db, uuid)
-
-  const sessions = db.collection('sessions')
-  const games = db.collection('games')
-  await sessions.deleteMany({})
-  await games.deleteMany({})
+  const store = new Store(db)
+  {
+    await db.collection('sessions').deleteMany({})
+    await db.collection('games').deleteMany({})
+  }
 
   const app = express()
   const server = require('http').Server(app)
@@ -31,19 +32,40 @@ const PORT = process.env.PORT || 8080
   server.listen(PORT)
   app.use(express.static('static'))
 
-  let adapters = new immutable.Map()
+  const notifiers = {}
+
+  const sessionManager = new Manager(async (id) => {
+    const notifier = notifiers[id]
+    if (!notifier) {
+      return
+    }
+    const session = await store.getSession(id)
+    if (!session) {
+      return
+    }
+    // const { username, status, meta } = session
+    return new Session(id, /* username, status, meta,  */store, notifier)
+  })
+
+  const gameManager = new Manager(async (id) => {
+    const game = await store.getGame(id)
+    const sessions = await Promise.all(
+      game.players.map(id => sessionManager.get(id)))
+    if (sessions.every(s => s != null)) {
+      return new Game(id, game.state, store, sessions)
+    }
+  })
 
   io.on('connection', (socket) => {
-    const id = uuid()
-    const adapter = createWebAdapter(socket)
-    adapter.init(id)
-    adapters = adapters.set(id, adapter)
-    const getAdapter = opponentId => adapters.get(opponentId)
+    const sessionID = uuid()
+    store.createSession(sessionID)
+    notifiers[sessionID] = new SocketNotifier(socket)
+    const socketEventHandler =
+      new SocketEventHandler(sessionID, sessionManager, gameManager)
     socket.on('disconnect', (socket) => {
-      adapters = adapters.remove(id)
-      sessions.deleteMany({ id })
-      games.deleteMany({})
+      db.collection('sessions').removeOne({ id: sessionID })
+      db.collection('games').removeMany({})
     })
-    socket.on('action', createActionHandler(id, dbAccessor, adapter, getAdapter))
+    socket.on('action', socketEventHandler.handle)
   })
 })()
