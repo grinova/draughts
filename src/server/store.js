@@ -51,8 +51,8 @@ class Store {
     return this.sessions.updateOne({ id }, { '$set': { gameID }})
   }
 
-  leaveGame(id) {
-    return this.sessions.updateOne({ id }, { '$unset': { gameID: 1 }})
+  exitGame(id) {
+    return this.sessions.updateOne({ id }, { '$unset': { status: 1, gameID: 1 }})
   }
 
   createGame(id, firstPlayerID, secondPlayerID) {

@@ -16,11 +16,11 @@ class Game {
     this.remove()
   }
 
-  play() {
-    this.updateStateNotify()
+  async onPlay() {
+    this.notify()
   }
 
-  async makeMove(move) {
+  async onMove(move) {
     const { error, field } = makeMove(move, this.state.field)
     if (error) {
       return
@@ -30,26 +30,26 @@ class Game {
       this.close()
       const winnerID = this.players[winner]
       const loserID = this.players[(winner + 1) % 2]
-      this.sessions[winnerID].win()
-      this.sessions[loserID].lose()
+      this.sessions[winnerID].onWin()
+      this.sessions[loserID].onLose()
     } else {
       this.state.field = field
       await this.store.updateGameState(this.id, this.state)
-      this.updateStateNotify()
+      this.notify()
     }
   }
 
-  leave(sessionID) {
+  async onLeave(sessionID) {
     for (let id in this.sessions) {
       const session = this.sessions[id]
       if (id != sessionID) {
-        session.opponentLeave()
+        session.onOpponentLeave()
       }
     }
     this.close()
   }
 
-  updateStateNotify() {
+  notify() {
     for (let id in this.sessions) {
       this.sessions[id].updateState(this.state)
     }

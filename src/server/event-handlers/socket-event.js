@@ -1,35 +1,27 @@
 const actions = require('../../common/actions')
 
 class SocketEventHandler {
-  constructor(id, sessionManager, gameManager) {
-    this.id = id
-    this.sessionManager = sessionManager
-    this.gameManager = gameManager
-    this.handle = this.handle.bind(this)
+  constructor(player) {
+    this.player = player
   }
 
-  async handle(action) {
-    const session = await this.sessionManager.get(this.id)
+  async onAction(action) {
     switch (action.type) {
-      case actions.PLAY_GAME:
-        const res = await session.play()
-        if (res) {
-          const { gameID, opponentSessionID } = res
-          const game = await this.gameManager.get(gameID)
-          const opponentSession = await this.sessionManager.get(opponentSessionID)
-          session.join(game)
-          opponentSession.join(game)
-          game.play()
-        }
-        break;
+      case actions.PLAY_GAME: {
+          this.player.onPlay()
+        } break;
       case actions.USER_STEP: {
           const { payload: move } = action
-          session.makeMove(move)
+          this.player.onMove(move)
         } break;
       case actions.LEAVE: {
-          session.leave()
+          this.player.onLeave()
         } break;
     }
+  }
+
+  async onDisconnect() {
+    this.player.onDisconnect()
   }
 }
 

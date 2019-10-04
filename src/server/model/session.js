@@ -1,5 +1,3 @@
-const uuid = require('uuid')
-
 class Session {
   constructor(id, /* username, status, meta,  */game, store, notifier, remove) {
     this.id = id
@@ -12,65 +10,56 @@ class Session {
     this.remove = remove
   }
 
-  close() {
-    this.store.removeSession(id)
+  disconnect() {
+    this.onLeave()
+    this.store.removeSession(this.id)
     this.remove()
   }
 
-  async play() {
-    this.notifier.wait()
-    const opponentSessionData = await this.store.findStandbySessionForPlayer(this.id)
-    if (opponentSessionData) {
-      await this.store.updateSessionStatus(this.id, 'active')
-      await this.store.updateSessionStatus(opponentSessionData.id, 'active')
-      const gameID = uuid()
-      const opponentSessionID = opponentSessionData.id
-      await this.store.createGame(gameID, this.id, opponentSessionID)
-      return { opponentSessionID, gameID }
+  async onPlay(game) {
+    if (game) {
+      this.game = game
+      await this.store.joinGame(this.id, this.game.id)
     } else {
       this.store.updateSessionStatus(this.id, 'stand-by')
     }
+    this.notifier.wait()
   }
 
-  makeMove(move) {
-    this.game.makeMove(move)
+  async onMove(move) {
+    this.game.onMove(move)
   }
 
-  leave() {
+  async onLeave() {
     if (this.game) {
-      this.game.leave(this.id)
-      this.game = null
-      this._standBy()
+      this.game.onLeave(this.id)
+      this._exitGame()
     }
+    this.notifier.leave()
   }
 
-  opponentLeave() {
-    this._standBy()
+  async onOpponentLeave() {
+    this._exitGame()
     this.notifier.opponentLeave()
   }
 
-  win() {
-    this._standBy()
+  async onWin() {
+    this._exitGame()
     this.notifier.win()
   }
 
-  lose() {
-    this._standBy()
+  async onLose() {
+    this._exitGame()
     this.notifier.lose()
-  }
-
-  async join(game) {
-    this.game = game
-    await this.store.joinGame(this.id, this.game.id)
   }
 
   updateState(state) {
     this.notifier.state(state)
   }
 
-  async _standBy() {
-    await this.store.leaveGame(this.id)
-    await this.store.updateSessionStatus(this.id, 'stand-by')
+  async _exitGame() {
+    await this.store.exitGame(this.id)
+    this.game = null
   }
 }
 

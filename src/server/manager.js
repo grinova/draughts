@@ -5,8 +5,9 @@ class Manager {
     this.objects = {}
   }
 
-  async get(id, meta) {
-    return this.objects[id] = this.objects[id] || await this.creator(id, meta)
+  async get(id) {
+    return this.objects[id] = this.objects[id] ||
+      await this.creator(id, () => this.remove(id))
   }
 
   remove(id) {
