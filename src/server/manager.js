@@ -9,9 +9,9 @@ class Manager {
     return this.objects[id] = this.objects[id] || await this.creator(id, meta)
   }
 
-  // remove(id) {
-  //   delete this.objects[id]
-  // }
+  remove(id) {
+    delete this.objects[id]
+  }
 }
 
 module.exports = Manager

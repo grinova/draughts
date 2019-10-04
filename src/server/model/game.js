@@ -1,11 +1,19 @@
+const endGame = require('../game/end-game')
 const makeMove = require('../game/make-move')
 
 class Game {
-  constructor(id, state, store, sessions) {
+  constructor(id, players, state, store, sessions, remove) {
     this.id = id
+    this.players = players
     this.state = state
     this.store = store
     this.sessions = sessions
+    this.remove = remove
+  }
+
+  close() {
+    this.store.removeGame(this.id)
+    this.remove()
   }
 
   play() {
@@ -17,9 +25,18 @@ class Game {
     if (error) {
       return
     }
-    this.state.field = field
-    await this.store.updateGameState(this.id, this.state)
-    this.updateStateNotify()
+    const { isEnd, winner } = endGame(field)
+    if (isEnd) {
+      this.close()
+      const winnerID = this.players[winner]
+      const loserID = this.players[(winner + 1) % 2]
+      this.sessions[winnerID].win()
+      this.sessions[loserID].lose()
+    } else {
+      this.state.field = field
+      await this.store.updateGameState(this.id, this.state)
+      this.updateStateNotify()
+    }
   }
 
   leave(sessionID) {
@@ -29,7 +46,7 @@ class Game {
         session.opponentLeave()
       }
     }
-    this.store.removeGame(this.id)
+    this.close()
   }
 
   updateStateNotify() {

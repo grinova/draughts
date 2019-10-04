@@ -43,12 +43,15 @@ const PORT = process.env.PORT || 8080
     if (!session) return
     // const { username, status, meta } = session
     const game = null
-    return new Session(id, /* username, status, meta,  */game, store, notifier)
+    const remove = () => { sessionManager.remove(id) }
+    return new Session(
+      id, /* username, status, meta,  */game, store, notifier, remove)
   })
 
   const gameManager = new Manager(async (id) => {
     const game = await store.getGame(id)
     if (!game) return
+    const { players, state } = game
     const sessions = {}
     for (let id of game.players) {
       const session = await sessionManager.get(id)
@@ -57,7 +60,8 @@ const PORT = process.env.PORT || 8080
       }
       sessions[id] = session
     }
-    return new Game(id, game.state, store, sessions)
+    const remove = () => { gameManager.remove(id) }
+    return new Game(id, players, state, store, sessions, remove)
   })
 
   io.on('connection', (socket) => {

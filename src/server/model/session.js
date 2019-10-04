@@ -1,7 +1,7 @@
 const uuid = require('uuid')
 
 class Session {
-  constructor(id, /* username, status, meta,  */game, store, notifier) {
+  constructor(id, /* username, status, meta,  */game, store, notifier, remove) {
     this.id = id
     this.game = game
     // this.username = username
@@ -9,6 +9,12 @@ class Session {
     // this.meta = meta
     this.store = store
     this.notifier = notifier
+    this.remove = remove
+  }
+
+  close() {
+    this.store.removeSession(id)
+    this.remove()
   }
 
   async play() {
@@ -41,6 +47,16 @@ class Session {
   opponentLeave() {
     this._standBy()
     this.notifier.opponentLeave()
+  }
+
+  win() {
+    this._standBy()
+    this.notifier.win()
+  }
+
+  lose() {
+    this._standBy()
+    this.notifier.lose()
   }
 
   async join(game) {
