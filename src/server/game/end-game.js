@@ -1,5 +1,5 @@
 function endGame(field) {
-  return { isEnd: true, winner: 0 }
+  return { isEnd: false }
 }
 
 module.exports = endGame
