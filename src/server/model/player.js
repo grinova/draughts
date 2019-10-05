@@ -38,7 +38,9 @@ class Player {
 
   async onDisconnect() {
     const session = await this._getSession()
-    session.disconnect()
+    if (session) {
+      session.disconnect()
+    }
   }
 
   async _getSession() {
