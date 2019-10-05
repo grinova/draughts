@@ -12,6 +12,10 @@ class Vec2 {
     return new Vec2(this.x - vec2.x, this.y - vec2.y)
   }
 
+  mul(v) {
+    return new Vec2(this.x * v, this.y * v)
+  }
+
   div(v) {
     return new Vec2(this.x / v, this.y / v)
   }
