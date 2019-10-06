@@ -19,17 +19,26 @@ class Session {
   async onPlay(game) {
     if (game) {
       this.game = game
+      await this.store.updateSessionStatus(this.id, 'active')
       await this.store.joinGame(this.id, this.game.id)
     } else {
       this.store.updateSessionStatus(this.id, 'stand-by')
+      this.notifier.wait()
     }
-    this.notifier.wait()
+  }
+
+  async onToss(side) {
+    this.notifier.toss(side)
   }
 
   async onMove(move) {
-    const error = await this.game.onMove(this.id, move)
-    if (error) {
-      this.notifier.error(error)
+    if (this.game) {
+      const error = await this.game.onMove(this.id, move)
+      if (error) {
+        this.notifier.error(error)
+      }
+    } else {
+      this.notifier.error('You are not in the game')
     }
   }
 
@@ -37,8 +46,8 @@ class Session {
     if (this.game) {
       this.game.onLeave(this.id)
       this._exitGame()
+      this.notifier.leave()
     }
-    this.notifier.leave()
   }
 
   async onOpponentLeave() {

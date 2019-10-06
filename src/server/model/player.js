@@ -9,11 +9,10 @@ class Player {
 
   async onPlay() {
     const session = await this._getSession()
+    session.onLeave()
     const opponentSessionData = await this.store.findStandbySessionForPlayer(this.id)
     if (opponentSessionData) {
       const opponentSessionID = opponentSessionData.id
-      await this.store.updateSessionStatus(this.id, 'active')
-      await this.store.updateSessionStatus(opponentSessionID, 'active')
       const gameID = uuid()
       await this.store.createGame(gameID, this.id, opponentSessionID)
       const game = await this.managers.game.get(gameID)

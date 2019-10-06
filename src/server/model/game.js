@@ -18,6 +18,10 @@ class Game {
 
   async onPlay() {
     this.notify()
+    const { state, players } = this
+    const { activePlayer } = state
+    this.sessions[players[activePlayer]].onToss('white')
+    this.sessions[players[(activePlayer + 1) % 2]].onToss('black')
   }
 
   async onMove(sessionID, move) {

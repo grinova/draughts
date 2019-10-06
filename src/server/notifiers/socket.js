@@ -7,6 +7,7 @@ class SocketNotifier {
 
   wait() {
     this.emit(actions.status('stand-by'))
+    this.emit(actions.state('waiting'))
   }
 
   play() {
@@ -15,6 +16,10 @@ class SocketNotifier {
 
   state(state) {
     this.emit(actions.gameState(state))
+  }
+
+  toss(side) {
+    this.emit(actions.state(side))
   }
 
   leave() {
@@ -42,7 +47,7 @@ class SocketNotifier {
   }
 
   error(error) {
-    this.emit(actions.state(`Error: ${error}`))
+    this.emit(actions.state(`error{${error}}`))
   }
 
   emit(payload) {
