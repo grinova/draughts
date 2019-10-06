@@ -27,7 +27,10 @@ class Session {
   }
 
   async onMove(move) {
-    this.game.onMove(move)
+    const error = await this.game.onMove(this.id, move)
+    if (error) {
+      this.notifier.error(error)
+    }
   }
 
   async onLeave() {
@@ -43,9 +46,21 @@ class Session {
     this.notifier.opponentLeave()
   }
 
+  async onYourStep() {
+    this.notifier.yourStep()
+  }
+
+  async onOpponentStep() {
+    this.notifier.opponentStep()
+  }
+
   async onWin() {
     this._exitGame()
     this.notifier.win()
+  }
+
+  async onError(error) {
+    this.notifier.error(error)
   }
 
   async onLose() {

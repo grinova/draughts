@@ -15,18 +15,18 @@ function isPiece(piece) {
 
 function isOwnPiece(ownPiece, piece) {
   return (
-    (ownPiece == 'w' || ownPiece == 'wk') &&
-      (piece == 'w' || piece == 'wk') ||
-    (ownPiece == 'b' || ownPiece == 'bk') &&
-      (piece == 'b' || piece == 'bk')
+    (ownPiece == WHITE_MAN || ownPiece == WHITE_KING) &&
+      (piece == WHITE_MAN || piece == WHITE_KING) ||
+    (ownPiece == BLACK_MAN || ownPiece == BLACK_KING) &&
+      (piece == BLACK_MAN || piece == BLACK_KING)
   )
 }
 
 function isEnemyPiece(ownPiece, enemyPiece) {
   return (
     (ownPiece == WHITE_MAN || ownPiece == WHITE_KING) &&
-      (enemyPiece == BLACK_MAN || enemyPiece == WHITE_KING) ||
-    (ownPiece == BLACK_MAN || ownPiece == WHITE_KING) &&
+      (enemyPiece == BLACK_MAN || enemyPiece == BLACK_KING) ||
+    (ownPiece == BLACK_MAN || ownPiece == BLACK_KING) &&
       (enemyPiece == WHITE_MAN || enemyPiece == WHITE_KING)
   )
 }

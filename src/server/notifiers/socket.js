@@ -25,12 +25,24 @@ class SocketNotifier {
     this.emit(actions.state('opponent-leave'))
   }
 
+  yourStep() {
+    this.emit(actions.state('your-step'))
+  }
+
+  opponentStep() {
+    this.emit(actions.state('opponent-step'))
+  }
+
   win() {
     this.emit(actions.state('you-win'))
   }
 
   lose() {
     this.emit(actions.state('you-lose'))
+  }
+
+  error(error) {
+    this.emit(actions.state(`Error: ${error}`))
   }
 
   emit(payload) {

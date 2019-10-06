@@ -20,22 +20,30 @@ class Game {
     this.notify()
   }
 
-  async onMove(move) {
-    const { error, field } = makeMove(move, this.state.field)
-    if (error) {
-      return
+  async onMove(sessionID, move) {
+    const { state, players } = this
+    const { activePlayer } = state
+    if (sessionID != players[activePlayer]) {
+      return 'Now the opponent\'s move'
     }
-    const { isEnd, winner } = endGame(field)
+    const { error, field, canMakeAnotherMove } =
+      makeMove(activePlayer, move, state.field)
+    if (error) {
+      return error
+    }
+    state.field = field
+    if (!canMakeAnotherMove) {
+      state.activePlayer = (state.activePlayer + 1) % 2
+    }
+    await this.store.updateGameState(this.id, state)
+    this.notify()
+    const { isEnd, winner } = endGame(state.activePlayer, field)
     if (isEnd) {
       this.close()
-      const winnerID = this.players[winner]
-      const loserID = this.players[(winner + 1) % 2]
+      const winnerID = players[winner]
+      const loserID = players[(winner + 1) % 2]
       this.sessions[winnerID].onWin()
       this.sessions[loserID].onLose()
-    } else {
-      this.state.field = field
-      await this.store.updateGameState(this.id, this.state)
-      this.notify()
     }
   }
 
@@ -50,9 +58,13 @@ class Game {
   }
 
   notify() {
-    for (let id in this.sessions) {
-      this.sessions[id].updateState(this.state)
+    const { state, sessions, players } = this
+    for (let id in sessions) {
+      sessions[id].updateState(state)
     }
+    const { activePlayer } = state
+    sessions[players[activePlayer]].onYourStep()
+    sessions[players[(activePlayer + 1) % 2]].onOpponentStep()
   }
 }
 

@@ -2,7 +2,7 @@ class Store {
   static initialGameState() {
     return {
       score: [0, 0],
-      ativePlayer: 0,
+      activePlayer: 0,
       field: [
         [' ', 'b', ' ', 'b', ' ', 'b', ' ', 'b'],
         ['b', ' ', 'b', ' ', 'b', ' ', 'b', ' '],

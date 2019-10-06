@@ -44,10 +44,12 @@ function* possibleMovePositions(pos, field) {
       const direction = new Vec2(xDirection, -forward)
       const takePosition = pos.add(direction)
       const jumpPosition = takePosition.add(direction)
-      const takePiece = field[takePosition.y][takePosition.x]
-      const jumpTarget = field[jumpPosition.y][jumpPosition.x]
-      if (isEnemyPiece(ownPiece, takePiece) && isEmpty(jumpTarget)) {
-        yield { position: jumpPosition, take: takePosition }
+      if (inField(takePosition) && inField(jumpPosition)) {
+        const takePiece = field[takePosition.y][takePosition.x]
+        const jumpTarget = field[jumpPosition.y][jumpPosition.x]
+        if (isEnemyPiece(ownPiece, takePiece) && isEmpty(jumpTarget)) {
+          yield { position: jumpPosition, take: takePosition }
+        }
       }
     }
   } else if (isKing(ownPiece)) {
