@@ -6,12 +6,10 @@ class SocketNotifier {
   }
 
   wait() {
-    this.emit(actions.status('stand-by'))
-    this.emit(actions.state('waiting'))
+    this.emit(actions.log('waiting'))
   }
 
   play() {
-    this.emit(actions.status('active'))
   }
 
   state(state) {
@@ -19,35 +17,35 @@ class SocketNotifier {
   }
 
   toss(side) {
-    this.emit(actions.state(side))
+    this.emit(actions.log(side))
   }
 
   leave() {
-    this.emit(actions.state('you-leave'))
+    this.emit(actions.log('you-leave'))
   }
 
   opponentLeave() {
-    this.emit(actions.state('opponent-leave'))
+    this.emit(actions.log('opponent-leave'))
   }
 
   yourStep() {
-    this.emit(actions.state('your-step'))
+    this.emit(actions.log('your-step'))
   }
 
   opponentStep() {
-    this.emit(actions.state('opponent-step'))
+    this.emit(actions.log('opponent-step'))
   }
 
   win() {
-    this.emit(actions.state('you-win'))
+    this.emit(actions.log('you-win'))
   }
 
   lose() {
-    this.emit(actions.state('you-lose'))
+    this.emit(actions.log('you-lose'))
   }
 
   error(error) {
-    this.emit(actions.state(`error{${error}}`))
+    this.emit(actions.log(`error{${error}}`))
   }
 
   emit(payload) {

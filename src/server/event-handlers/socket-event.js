@@ -10,7 +10,7 @@ class SocketEventHandler {
       case actions.PLAY_GAME: {
           this.player.onPlay()
         } break;
-      case actions.USER_STEP: {
+      case actions.MOVE: {
           const { payload: move } = action
           this.player.onMove(move)
         } break;
