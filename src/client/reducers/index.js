@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import { handleAction } from 'redux-actions'
-import { USER_NAME_CHANGE } from '../actions'
+import { USER_NAME_CHANGE, SELECT_PIECE } from '../actions'
 import {
   SESSION_ID,
   STATUS,
@@ -13,6 +13,12 @@ const username = handleAction(
   USER_NAME_CHANGE,
   (state, { payload: username }) => username,
   ''
+)
+
+const selectedPiece = handleAction(
+  SELECT_PIECE,
+  (state, { payload: pos }) => pos,
+  null
 )
 
 const sessionId = handleAction(
@@ -51,6 +57,7 @@ function opponent(state = '', action) {
 
 const rootReducer = combineReducers({
   username,
+  selectedPiece,
   opponent,
   sessionId,
   status,

@@ -1,24 +1,19 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { userNameChange } from '../actions'
+import { userNameChange, selectPiece } from '../actions'
 import Field from '../components/field'
 import { playGame, userStep, leave } from '../../common/actions'
 
 class App extends React.Component {
-  state = {
-    move: []
-  }
-
   handleCellOnClick = (i, j) => {
-    const { move } = this.state
-    move.push({ row: i, column: j })
-    this.setState({ move }, () => {
-      const { move } = this.state
-      if (move.length >= 2) {
-        this.props.onStep({ from: move[0], to: move[1] })
-        this.setState({ move: [] })
-      }
-    })
+    const { selectedPiece } = this.props
+    const pos = { row: i, column: j }
+    if (!selectedPiece) {
+      this.props.onSelectPiece(pos)
+    } else {
+      this.props.onSelectPiece(null)
+      this.props.onStep(selectedPiece, pos)
+    }
   }
 
   render() {
@@ -41,6 +36,7 @@ class App extends React.Component {
 function mapStateToProps(state) {
   return {
     username: state.username,
+    selectedPiece: state.selectedPiece,
     field: state.gameState.field,
     state: state.state
   }
@@ -50,7 +46,8 @@ function mapDispatchToProps(dispatch) {
   return {
     userNameOnChange: (username) => dispatch(userNameChange(username)),
     onPlay: (username) => dispatch(playGame(username)),
-    onStep: (chain) => dispatch(userStep(chain)),
+    onSelectPiece: (piece) => dispatch(selectPiece(piece)),
+    onStep: (piece, pos) => dispatch(userStep({ from: piece, to: pos })),
     onLeave: () => dispatch(leave())
   }
 }
