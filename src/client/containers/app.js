@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { userNameChange, selectPiece } from '../actions'
-import Field from '../components/field'
+import Board from '../components/board'
 import Log from '../components/log'
 import { playGame, move, leave } from '../../common/actions'
 
@@ -27,7 +27,7 @@ class App extends React.Component {
           onChange={(e) => this.props.userNameOnChange(e.target.value)}/>
         <button onClick={() => this.props.onPlay(this.props.username)}>Play</button>
         <button onClick={this.props.onLeave}>Leave</button>
-        <Field data={this.props.field} onClick={this.handleCellOnClick}/>
+        <Board data={this.props.field} onClick={this.handleCellOnClick}/>
         <Log>{this.props.log}</Log>
       </React.Fragment>
     )

@@ -49,6 +49,10 @@ function getForwardDirection(piece) {
 }
 
 module.exports = {
+  WHITE_MAN,
+  BLACK_MAN,
+  WHITE_KING,
+  BLACK_KING,
   isEmpty,
   isPiece,
   isOwnPiece,

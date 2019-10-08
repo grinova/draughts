@@ -1,0 +1,6 @@
+export const WHITE_CELL = '#B93848'
+export const BLACK_CELL = '#232621'
+export const WHITE_PIECE_COLOR = '#F1F1FF'
+export const BLACK_PIECE_COLOR = '#e4a6ae'
+export const WHITE_PIECE_BORDER_COLOR = '#8b8bff'
+export const BLACK_PIECE_BORDER_COLOR = '#B93848'
