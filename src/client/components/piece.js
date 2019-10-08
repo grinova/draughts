@@ -20,15 +20,23 @@ export const PIECE_COLORS = {
   [BLACK_KING]: { border: BLACK_PIECE_BORDER_COLOR, fill: BLACK_PIECE_COLOR }
 }
 
+function boxShadow(color) {
+  return `0 0 10px 5px ${color}`
+}
+
 const Piece = styled.div`
   cursor: pointer;
-  width: 60%;
-  height: 60%;
+  width: 5vmin;
+  height: 5vmin;
   border-radius: 50%;
   border-style: solid;
   border-width: 1vmin;
-  border-color: ${props => PIECE_COLORS[props.piece].border};
-  background-color: ${props => PIECE_COLORS[props.piece].fill};
+  border-color: ${({ piece }) => PIECE_COLORS[piece].border};
+  background-color: ${({ piece }) => PIECE_COLORS[piece].fill};
+
+  box-shadow: ${({ movable, selected }) =>
+    movable ? boxShadow('#16A8C7') :
+      selected ? boxShadow('#00cffb') : 'none'};
 `
 
 export default Piece

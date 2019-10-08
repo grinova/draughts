@@ -5,13 +5,16 @@ import { WHITE_CELL, BLACK_CELL } from '../common/colors'
 import { isPiece } from '../../common/game/common'
 
 const Cell = styled.div`
-  background-color: ${props => props.bg};
   width: 10vmin;
   height: 10vmin;
   display: flex;
   justify-content: center;
   position: relative;
   align-items: center;
+
+  box-sizing: border-box;
+  background-color: ${({ bg, movable, available }) => movable || available ? '#20ab68' : bg};
+  border: ${({ movable, available }) => movable || available ? '1vmin solid #60e517' : 'none'};
 `
 
 const Row = styled.div`
@@ -19,17 +22,29 @@ const Row = styled.div`
   flex-direction: row;
 `
 
-const Board = ({ className, data, onClick }) => (
+const CELL_COLOR = [WHITE_CELL, BLACK_CELL]
+
+const Board = ({ className, reverse, data, onClick }) => (
   <div className={className}>
-    {data.map((row, i) => (
+    {(reverse ? data.reverse() : data).map((row, i) => (
       <Row key={i}>
-        {row.map((piece, j) => (
+        {(reverse ? row.reverse() : row).map((cell, j) => (
           <Cell key={j}
-            bg={(i + j) % 2 ? BLACK_CELL : WHITE_CELL}
-            onClick={() => onClick(i, j)}
+            bg={CELL_COLOR[(i + j) % 2]}
+            available={cell.available}
+            onClick={() => {
+              if (reverse) {
+                onClick(7 - i, 7 - j)
+              } else {
+                onClick(i, j)
+              }
+            }}
           >
-            {isPiece(piece) ?
-              <Piece piece={piece}/> :
+            {isPiece(cell.piece) ?
+              <Piece
+                piece={cell.piece}
+                movable={cell.movable}
+                selected={cell.selected}/> :
               null}
           </Cell>
         ))}

@@ -1,5 +1,6 @@
 const endGame = require('../game/end-game')
 const makeMove = require('../game/make-move')
+const { WHITE_MAN, BLACK_MAN } = require('../../common/game/common')
 
 class Game {
   constructor(id, players, state, store, sessions, remove) {
@@ -20,8 +21,8 @@ class Game {
     this.notify()
     const { state, players } = this
     const { activePlayer } = state
-    this.sessions[players[activePlayer]].onToss('white')
-    this.sessions[players[(activePlayer + 1) % 2]].onToss('black')
+    this.sessions[players[activePlayer]].onGameInfo({ side: WHITE_MAN })
+    this.sessions[players[(activePlayer + 1) % 2]].onGameInfo({ side: BLACK_MAN })
   }
 
   async onMove(sessionID, move) {

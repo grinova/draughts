@@ -4,6 +4,9 @@ const BLACK_MAN = 'b'
 const WHITE_KING = 'wk'
 const BLACK_KING = 'bk'
 
+const WHITE_SIDE = WHITE_MAN
+const BLACK_SIDE = BLACK_MAN
+
 function isEmpty(piece) {
   return piece == EMPTY
 }
@@ -53,6 +56,8 @@ module.exports = {
   BLACK_MAN,
   WHITE_KING,
   BLACK_KING,
+  WHITE_SIDE,
+  BLACK_SIDE,
   isEmpty,
   isPiece,
   isOwnPiece,

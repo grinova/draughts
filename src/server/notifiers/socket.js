@@ -9,7 +9,8 @@ class SocketNotifier {
     this.emit(actions.log('waiting'))
   }
 
-  play() {
+  gameInfo(gameInfo) {
+    this.emit(actions.gameInfo(gameInfo))
   }
 
   state(state) {

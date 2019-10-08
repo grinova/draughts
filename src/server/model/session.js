@@ -27,8 +27,8 @@ class Session {
     }
   }
 
-  async onToss(side) {
-    this.notifier.toss(side)
+  async onGameInfo(gameInfo) {
+    this.notifier.gameInfo(gameInfo)
   }
 
   async onMove(move) {
