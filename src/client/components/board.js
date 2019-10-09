@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import Piece from './piece'
 import { WHITE_CELL, BLACK_CELL } from '../common/colors'
 import { isPiece } from '../../common/game/common'
+import Vec2 from '../../common/vec2'
 
 const Cell = styled.div`
   width: 10vmin;
@@ -26,18 +27,14 @@ const CELL_COLOR = [WHITE_CELL, BLACK_CELL]
 
 const Board = ({ className, reverse, data, onClick }) => (
   <div className={className}>
-    {(reverse ? data.reverse() : data).map((row, i) => (
-      <Row key={i}>
-        {(reverse ? row.reverse() : row).map((cell, j) => (
-          <Cell key={j}
-            bg={CELL_COLOR[(i + j) % 2]}
+    {(reverse ? data.slice().reverse() : data).map((row, y) => (
+      <Row key={y}>
+        {(reverse ? row.slice().reverse() : row).map((cell, x) => (
+          <Cell key={x}
+            bg={CELL_COLOR[(y + x) % 2]}
             available={cell.available}
             onClick={() => {
-              if (reverse) {
-                onClick(7 - i, 7 - j)
-              } else {
-                onClick(i, j)
-              }
+              onClick(reverse ? new Vec2(7 - x, 7 - y) : new Vec2(x, y))
             }}
           >
             {isPiece(cell.piece) ?

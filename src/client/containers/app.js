@@ -7,14 +7,17 @@ import { playGame, move, leave } from '../../common/actions'
 import { BLACK_MAN, isOwnPiece } from '../../common/game/common'
 
 class App extends React.Component {
-  handleCellOnClick = (i, j) => {
+  handleCellOnClick = (pos) => {
+    const { boardData } = this.props
     const { selected } = this.props
-    const pos = { row: i, column: j }
-    if (!selected) {
-      this.props.onSelectPiece(pos)
-    } else {
+    const cell = boardData[pos.y][pos.x]
+    if (selected) {
+      if (pos.notEqual(selected) && cell.available) {
+        this.props.onMove(selected, pos)
+      }
       this.props.onSelectPiece(null)
-      this.props.onMove(selected, pos)
+    } else if (cell.movable) {
+      this.props.onSelectPiece(pos)
     }
   }
 
@@ -40,13 +43,13 @@ class App extends React.Component {
 
 function mapStateToProps(state) {
   const { username, selected: sel, gameInfo: { side }, gameState: { field }, moves, log } = state
-  const boardData = field.map((row, i) => {
-    return row.map((piece, j) => {
-      const selected = sel && sel.row == i && sel.column == j
+  const boardData = field.map((row, y) => {
+    return row.map((piece, x) => {
+      const selected = sel && sel.x == x && sel.y == y
       const movable =
-        !sel && isOwnPiece(side, piece) && moves[i][j].length > 0
-      const available = sel && moves[sel.row][sel.column].some(pos => {
-        return pos.y == i && pos.x == j
+        !sel && isOwnPiece(side, piece) && moves[y][x].length > 0
+      const available = sel && moves[sel.y][sel.x].some(pos => {
+        return pos.x == x && pos.y == y
       })
       return { piece, selected, side, movable, available }
     })
@@ -60,7 +63,7 @@ function mapDispatchToProps(dispatch) {
     userNameOnChange: (username) => dispatch(userNameChange(username)),
     onPlay: (username) => dispatch(playGame(username)),
     onSelectPiece: (piece) => dispatch(selectPiece(piece)),
-    onMove: (piece, pos) => dispatch(move({ from: piece, to: pos })),
+    onMove: (from, to) => dispatch(move({ from, to })),
     onLeave: () => dispatch(leave())
   }
 }

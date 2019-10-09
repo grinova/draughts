@@ -3,6 +3,7 @@ import { handleAction } from 'redux-actions'
 import { USER_NAME_CHANGE, SELECT_PIECE } from '../actions'
 import { GAME_STATE, GAME_INFO, LOG } from '../../common/actions'
 import availableMoves from '../../common/game/available-moves'
+import Vec2 from '../../common/vec2'
 
 const username = handleAction(
   USER_NAME_CHANGE,
@@ -30,8 +31,12 @@ const gameState = handleAction(
 
 const moves = handleAction(
   GAME_STATE,
-  (state, { payload: { activePlayer, field } }) => {
-    const moves = availableMoves(activePlayer, field)
+  (state, { payload: { activePlayer, field, lastJumpPiece } }) => {
+    const moves = availableMoves(
+      activePlayer,
+      field,
+      lastJumpPiece && new Vec2(lastJumpPiece.x, lastJumpPiece.y)
+    )
     const res = field.map(row => row.map(() => ([])))
     for (let move of moves) {
       res[move.from.y][move.from.x].push(move.to)

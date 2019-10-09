@@ -13,27 +13,28 @@ function inField(pos) {
   return pos.x >= 0 && pos.x < 8 && pos.y >= 0 && pos.y < 8
 }
 
-function* possibleMovePositions(pos, field) {
-  const ownPiece = field[pos.y][pos.x]
+function possibleMovePositions(from, field) {
+  const ownPiece = field[from.y][from.x]
   if (!isPiece(ownPiece)) {
-    return
+    return []
   }
+  const res = []
   const forward = getForwardDirection(ownPiece)
   if (isMan(ownPiece)) {
     for (let xDirection of [-1, 1]) {
       const direction  = new Vec2(xDirection, forward)
-      const movePosition = pos.add(direction)
+      const movePosition = from.add(direction)
       if (inField(movePosition)) {
         const moveTarget = field[movePosition.y][movePosition.x]
         if (isEmpty(moveTarget)) {
-          yield { position: movePosition }
+          res.push({ position: movePosition })
         } else {
           if (isEnemyPiece(ownPiece, moveTarget)) {
             const jumpPosition = movePosition.add(direction)
             if (inField(jumpPosition)) {
               const jumpTarget = field[jumpPosition.y][jumpPosition.x]
               if (isEmpty(jumpTarget)) {
-                yield { position: jumpPosition, take: movePosition }
+                res.push({ position: jumpPosition, take: movePosition })
               }
             }
           }
@@ -42,13 +43,13 @@ function* possibleMovePositions(pos, field) {
     }
     for (let xDirection of [-1, 1]) {
       const direction = new Vec2(xDirection, -forward)
-      const takePosition = pos.add(direction)
+      const takePosition = from.add(direction)
       const jumpPosition = takePosition.add(direction)
       if (inField(takePosition) && inField(jumpPosition)) {
         const takePiece = field[takePosition.y][takePosition.x]
         const jumpTarget = field[jumpPosition.y][jumpPosition.x]
         if (isEnemyPiece(ownPiece, takePiece) && isEmpty(jumpTarget)) {
-          yield { position: jumpPosition, take: takePosition }
+          res.push({ position: jumpPosition, take: takePosition })
         }
       }
     }
@@ -58,7 +59,7 @@ function* possibleMovePositions(pos, field) {
         const direction = new Vec2(xDirection, yDirection)
         let canMove = true
         let takePosition
-        let movePosition = pos
+        let movePosition = from
         while (canMove) {
           movePosition = movePosition.add(direction)
           if (!inField(movePosition)) {
@@ -66,7 +67,7 @@ function* possibleMovePositions(pos, field) {
           } else {
             const target = field[movePosition.y][movePosition.x]
             if (isEmpty(target)) {
-              yield { position: movePosition, take: takePosition }
+              res.push({ position: movePosition, take: takePosition })
             } else if (isOwnPiece(ownPiece, target)) {
               canMove = false
             } else if (isEnemyPiece(ownPiece, target)) {
@@ -76,7 +77,7 @@ function* possibleMovePositions(pos, field) {
                 takePosition = movePosition
                 const jumpPosition = takePosition.add(direction)
                 if (isEmpty(jumpPosition)) {
-                  yield { position: jumpPosition, take: takePosition }
+                  res.push({ position: jumpPosition, take: takePosition })
                 }
               }
             }
@@ -85,6 +86,7 @@ function* possibleMovePositions(pos, field) {
       }
     }
   }
+  return res;
 }
 
 module.exports = possibleMovePositions
