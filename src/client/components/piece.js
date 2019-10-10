@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import Crown from './crown'
 import {
   WHITE_PIECE_COLOR,
   BLACK_PIECE_COLOR,
@@ -10,7 +11,8 @@ import {
   WHITE_MAN,
   BLACK_MAN,
   WHITE_KING,
-  BLACK_KING
+  BLACK_KING,
+  isKing
 } from '../../common/game/common'
 
 export const PIECE_COLORS = {
@@ -24,7 +26,16 @@ function boxShadow(color) {
   return `0 0 10px 5px ${color}`
 }
 
-const Piece = styled.div`
+const Piece = ({ className, piece }) => (
+  <div className={className}>
+    {isKing(piece) ? <Crown color={PIECE_COLORS[piece].border}/> : null}
+  </div>
+)
+
+const StyledPiece = styled(Piece)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
   width: 5vmin;
   height: 5vmin;
@@ -39,4 +50,4 @@ const Piece = styled.div`
       selected ? boxShadow('#00cffb') : 'none'};
 `
 
-export default Piece
+export default StyledPiece
