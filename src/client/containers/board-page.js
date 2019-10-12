@@ -1,12 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
 import Board from '../components/board'
 import { selectPiece } from '../actions'
-import { ROUTES } from '../config'
 import { move, leave } from '../../common/actions'
 import { BLACK_MAN, isOwnPiece } from '../../common/game/common'
-import { DEFAULT } from '../../common/state'
 
 class BoardPage extends React.Component {
   handleCellOnClick = (pos) => {
@@ -25,13 +22,6 @@ class BoardPage extends React.Component {
 
   handleLeave = () => {
     this.props.onLeave()
-  }
-
-  componentDidUpdate() {
-    const { history, state } = this.props
-    if (state == DEFAULT) {
-      history.push(ROUTES.HOME)
-    }
   }
 
   render() {
@@ -61,7 +51,7 @@ function mapStateToProps(state) {
     })
   })
   const reverse = side == BLACK_MAN
-  return { state: state.state, selected: sel, reverse, boardData }
+  return { selected: sel, reverse, boardData }
 }
 
 function mapDispatchToProps(dispatch) {
@@ -72,4 +62,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(BoardPage))
+export default connect(mapStateToProps, mapDispatchToProps)(BoardPage)
