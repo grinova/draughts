@@ -29,7 +29,9 @@ const PORT = process.env.PORT || 8080
   const io = socket(server)
 
   server.listen(PORT)
+  app.use('/index.html', (req, res) => res.redirect('/'))
   app.use(express.static('static'))
+  app.use('*', (req, res) => res.redirect('/'))
 
   const notifiers = {}
   const managers = createManagers(store, notifiers)
