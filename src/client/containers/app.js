@@ -6,14 +6,15 @@ import {
 } from 'react-router-dom'
 import LoginPage from './login-page'
 import BoardPage from './board-page'
+import { ROUTES } from '../config'
 
 const App = () => (
   <Router>
     <Switch>
-      <Route exact path='/'>
+      <Route exact path={ROUTES.HOME}>
         <LoginPage/>
       </Route>
-      <Route path='/board'>
+      <Route path={ROUTES.BOARD}>
         <BoardPage/>
       </Route>
     </Switch>
