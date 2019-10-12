@@ -1,8 +1,9 @@
 import { combineReducers } from 'redux'
 import { handleAction } from 'redux-actions'
 import { USER_NAME_CHANGE, SELECT_PIECE } from '../actions'
-import { GAME_STATE, GAME_INFO, LOG } from '../../common/actions'
+import { STATE, GAME_STATE, GAME_INFO, LOG } from '../../common/actions'
 import availableMoves from '../../common/game/available-moves'
+import { DEFAULT } from '../../common/state'
 import Vec2 from '../../common/vec2'
 
 const username = handleAction(
@@ -15,6 +16,12 @@ const selected = handleAction(
   SELECT_PIECE,
   (state, { payload: pos }) => pos,
   null
+)
+
+const state = handleAction(
+  STATE,
+  (state, { payload }) => payload,
+  DEFAULT
 )
 
 const gameInfo = handleAction(
@@ -63,6 +70,7 @@ const log = handleAction(
 const rootReducer = combineReducers({
   username,
   selected,
+  state,
   gameInfo,
   gameState,
   moves,

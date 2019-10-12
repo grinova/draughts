@@ -1,4 +1,5 @@
 const actions = require('../../common/actions')
+const { DEFAULT, PLAY } = require('../../common/state')
 
 class SocketNotifier {
   constructor(socket) {
@@ -10,6 +11,7 @@ class SocketNotifier {
   }
 
   gameInfo(gameInfo) {
+    this.emit(actions.state(PLAY))
     this.emit(actions.gameInfo(gameInfo))
   }
 
@@ -17,15 +19,13 @@ class SocketNotifier {
     this.emit(actions.gameState(state))
   }
 
-  toss(side) {
-    this.emit(actions.log(side))
-  }
-
   leave() {
+    this.emit(actions.state(DEFAULT))
     this.emit(actions.log('you-leave'))
   }
 
   opponentLeave() {
+    this.emit(actions.state(DEFAULT))
     this.emit(actions.log('opponent-leave'))
   }
 
@@ -38,10 +38,12 @@ class SocketNotifier {
   }
 
   win() {
+    this.emit(actions.state(DEFAULT))
     this.emit(actions.log('you-win'))
   }
 
   lose() {
+    this.emit(actions.state(DEFAULT))
     this.emit(actions.log('you-lose'))
   }
 

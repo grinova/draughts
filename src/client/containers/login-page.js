@@ -2,16 +2,24 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { userNameChange } from '../actions'
+import { ROUTES } from '../config'
 import { playGame } from '../../common/actions'
+import { PLAY } from '../../common/state'
 
 class LoginPage extends React.Component {
   handleUsernameChange = (e) => {
     this.props.onUserNameChange(e.target.value)
-    this.props.history.push('/board')
   }
 
   handleLogin = () => {
     this.props.onPlay(this.props.username)
+  }
+
+  componentDidUpdate() {
+    const { history, state } = this.props
+    if (state == PLAY) {
+      history.push(ROUTES.BOARD)
+    }
   }
 
   render() {
@@ -30,7 +38,7 @@ class LoginPage extends React.Component {
 
 function mapStateToProps(state) {
   const { username } = state
-  return { username }
+  return { state: state.state, username }
 }
 
 function mapDispatchToProps(dispatch) {
