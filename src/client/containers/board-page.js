@@ -1,40 +1,75 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { makeStyles } from '@material-ui/core/styles'
+import Button from '@material-ui/core/Button'
+import Grid from '@material-ui/core/Grid'
+import Paper from '@material-ui/core/Paper'
 import Board from '../components/board'
 import { selectPiece } from '../actions'
 import { move, leave } from '../../common/actions'
 import { BLACK_MAN, isOwnPiece } from '../../common/game/common'
 
-class BoardPage extends React.Component {
-  handleCellOnClick = (pos) => {
-    const { boardData } = this.props
-    const { selected } = this.props
+const useStyles = makeStyles(theme => ({
+  root: {
+    height: '100%'
+  },
+  board: {
+    padding: theme.spacing(2, 2)
+  },
+  score: {
+    padding: theme.spacing(2, 2)
+  }
+}))
+
+const BoardPage = (props) => {
+  const handleCellOnClick = (pos) => {
+    const { boardData, selected } = props
     const cell = boardData[pos.y][pos.x]
     if (selected) {
       if (pos.notEqual(selected) && cell.available) {
-        this.props.onMove(selected, pos)
+        props.onMove(selected, pos)
       }
-      this.props.onSelectPiece(null)
+      props.onSelectPiece(null)
     } else if (cell.movable) {
-      this.props.onSelectPiece(pos)
+      props.onSelectPiece(pos)
     }
   }
 
-  handleLeave = () => {
-    this.props.onLeave()
+  const handleLeave = () => {
+    props.onLeave()
   }
 
-  render() {
-    return (
-      <React.Fragment>
-        <button onClick={this.handleLeave}>Leave</button>
-        <Board
-          reverse={this.props.reverse}
-          data={this.props.boardData}
-          onClick={this.handleCellOnClick}/>
-      </React.Fragment>
-    )
-  }
+  const classes = useStyles()
+
+  return (
+    <Grid
+      className={classes.root}
+      container
+      justify='center'
+      alignContent='center'
+      spacing={2}
+    >
+      <Grid item>
+        <Paper className={classes.board}>
+          <Board
+            reverse={props.reverse}
+            data={props.boardData}
+            onClick={handleCellOnClick}/>
+        </Paper>
+      </Grid>
+      <Grid item>
+        <Paper className={classes.score}>
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={handleLeave}
+          >
+            Leave
+          </Button>
+        </Paper>
+      </Grid>
+    </Grid>
+  )
 }
 
 function mapStateToProps(state) {

@@ -1,11 +1,17 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Switch, Route, withRouter } from 'react-router-dom'
+import { createGlobalStyle } from 'styled-components'
 import LoginPage from './login-page'
 import BoardPage from './board-page'
-import Log from '../components/log'
 import { ROUTES } from '../config'
 import { DEFAULT, PLAY } from '../../common/state'
+
+const GlobalStyles = createGlobalStyle`
+  body {
+    background-color: #cdcdcd;
+  }
+`
 
 class App extends React.Component {
   componentDidUpdate(prevProps) {
@@ -20,6 +26,7 @@ class App extends React.Component {
   render() {
     return (
       <React.Fragment>
+        <GlobalStyles/>
         <Switch>
           <Route exact path={ROUTES.HOME}>
             <LoginPage/>
@@ -28,7 +35,6 @@ class App extends React.Component {
             <BoardPage/>
           </Route>
         </Switch>
-        <Log>{this.props.log}</Log>
       </React.Fragment>
     )
   }
