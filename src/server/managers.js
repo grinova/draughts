@@ -10,10 +10,10 @@ function createManagers(store, notifiers) {
     }
     const session = await store.getSession(id)
     if (!session) return
-    // const { username, status, meta } = session
+    const { username/* , status, meta */ } = session
     const game = await gameManager.get(session.gameID)
     return new Session(
-      id, /* username, status, meta,  */game, store, notifier, remove)
+      id, username, /* status, meta,  */game, store, notifier, remove)
   })
 
   const gameManager = new Manager(async (id, remove) => {

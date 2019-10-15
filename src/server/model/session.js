@@ -1,8 +1,8 @@
 class Session {
-  constructor(id, /* username, status, meta,  */game, store, notifier, remove) {
+  constructor(id, username, /* status, meta,  */game, store, notifier, remove) {
     this.id = id
     this.game = game
-    // this.username = username
+    this.username = username
     // this.status = status
     // this.meta = meta
     this.store = store
@@ -14,6 +14,15 @@ class Session {
     this.onLeave()
     this.store.removeSession(this.id)
     this.remove()
+  }
+
+  getUserName() {
+    return this.username
+  }
+
+  setUsername(username) {
+    this.username = username
+    return this.store.updateSession(this.id, { username })
   }
 
   async onPlay(game) {

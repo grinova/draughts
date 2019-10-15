@@ -14,7 +14,7 @@ const Cell = styled.div`
   align-items: center;
 
   box-sizing: border-box;
-  background-color: ${({ bg, movable, available }) => movable || available ? '#20ab68' : bg};
+  ${({ movable, available }) => movable || available ? 'background-color: #20ab68' : ''};
   border: ${({ movable, available }) => movable || available ? '1vmin solid #60e517' : 'none'};
 `
 
@@ -23,15 +23,12 @@ const Row = styled.div`
   flex-direction: row;
 `
 
-const CELL_COLOR = [WHITE_CELL, BLACK_CELL]
-
 const Board = ({ className, reverse, data, onClick }) => (
   <div className={className}>
     {(reverse ? data.slice().reverse() : data).map((row, y) => (
       <Row key={y}>
         {(reverse ? row.slice().reverse() : row).map((cell, x) => (
           <Cell key={x}
-            bg={CELL_COLOR[(y + x) % 2]}
             available={cell.available}
             onClick={() => {
               onClick(reverse ? new Vec2(7 - x, 7 - y) : new Vec2(x, y))
@@ -53,6 +50,41 @@ const Board = ({ className, reverse, data, onClick }) => (
 const StyledBoard = styled(Board)`
   display: inline-block;
   flex-direction: column;
+  background-color: ${BLACK_CELL};
+  border-radius: 4px;
+
+  & > ${Row}:nth-child(odd) {
+    & > ${Cell}:nth-child(odd) {
+      background-color: ${WHITE_CELL};
+    }
+  }
+
+  & > ${Row}:nth-child(even) {
+    & > ${Cell}:nth-child(even) {
+      background-color: ${WHITE_CELL};
+    }
+  }
+
+  & > ${Row}:first-child {
+    & > ${Cell}:first-child {
+      border-top-left-radius: 4px;
+    }
+
+    & > ${Cell}:last-child {
+      border-top-right-radius: 4px;
+    }
+  }
+
+  & > ${Row}:last-child {
+    & > ${Cell}:first-child {
+      border-bottom-left-radius: 4px;
+    }
+
+    & > ${Cell}:last-child {
+      border-bottom-right-radius: 4px;
+    }
+
+  }
 `
 
 export default StyledBoard

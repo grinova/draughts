@@ -34,9 +34,8 @@ class Store {
     return this.sessions.removeOne({ id })
   }
 
-  updateSession(id, username, status, gameID, meta) {
-    const updateSession = { '$set': { username, status, meta, gameID } }
-    return this.sessions.findOneAndUpdate({ id }, updateSession)
+  updateSession(id, value) {
+    return this.sessions.findOneAndUpdate({ id }, { '$set': value })
   }
 
   updateSessionStatus(id, status) {

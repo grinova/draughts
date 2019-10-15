@@ -7,8 +7,9 @@ class Player {
     this.managers = managers
   }
 
-  async onPlay() {
+  async onPlay(username) {
     const session = await this._getSession()
+    session.setUsername(username)
     session.onLeave()
     const opponentSessionData = await this.store.findStandbySessionForPlayer(this.id)
     if (opponentSessionData) {

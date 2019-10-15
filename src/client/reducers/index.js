@@ -27,7 +27,7 @@ const state = handleAction(
 const gameInfo = handleAction(
   GAME_INFO,
   (state, { payload: gameInfo }) => gameInfo,
-  {}
+  { players: ['', ''] }
 )
 
 const gameState = handleAction(

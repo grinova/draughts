@@ -7,6 +7,25 @@ const BLACK_KING = 'bk'
 const WHITE_SIDE = WHITE_MAN
 const BLACK_SIDE = BLACK_MAN
 
+const sides = [WHITE_SIDE, BLACK_SIDE]
+
+const orders = {
+  [WHITE_SIDE]: 0,
+  [BLACK_SIDE]: 1
+}
+
+function getSide(order) {
+  return sides[order]
+}
+
+function getOrder(side) {
+  return orders[side]
+}
+
+function nextPlayerOrder(activePlayer) {
+  return (activePlayer + 1) % 2
+}
+
 function isEmpty(piece) {
   return piece == EMPTY
 }
@@ -58,6 +77,9 @@ module.exports = {
   BLACK_KING,
   WHITE_SIDE,
   BLACK_SIDE,
+  getSide,
+  getOrder,
+  nextPlayerOrder,
   isEmpty,
   isPiece,
   isOwnPiece,

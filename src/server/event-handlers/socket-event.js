@@ -8,7 +8,8 @@ class SocketEventHandler {
   async onAction(action) {
     switch (action.type) {
       case actions.PLAY_GAME: {
-          this.player.onPlay()
+          const { payload: username } = action
+          this.player.onPlay(username)
         } break;
       case actions.MOVE: {
           const { payload: move } = action

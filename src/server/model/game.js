@@ -1,10 +1,6 @@
 const endGame = require('../game/end-game')
 const makeMove = require('../game/make-move')
-const { WHITE_MAN, BLACK_MAN } = require('../../common/game/common')
-
-function nextPlayer(activePlayer) {
-  return (activePlayer + 1) % 2
-}
+const { WHITE_MAN, BLACK_MAN, nextPlayerOrder } = require('../../common/game/common')
 
 class Game {
   constructor(id, players, state, store, sessions, remove) {
@@ -25,8 +21,10 @@ class Game {
     this.notify()
     const { state, players } = this
     const { activePlayer } = state
-    this.sessions[players[activePlayer]].onGameInfo({ side: WHITE_MAN })
-    this.sessions[players[nextPlayer(activePlayer)]].onGameInfo({ side: BLACK_MAN })
+    let playersNames = players.map(id => this.sessions[id].getUserName())
+    this.sessions[players[activePlayer]].onGameInfo({ side: WHITE_MAN, players: playersNames })
+    playersNames = playersNames.slice().reverse()
+    this.sessions[players[nextPlayerOrder(activePlayer)]].onGameInfo({ side: BLACK_MAN, players: playersNames })
   }
 
   async onMove(sessionID, move) {
@@ -46,7 +44,7 @@ class Game {
     if (isEnd) {
       this.close()
       const winnerID = players[winner]
-      const loserID = players[nextPlayer(winner)]
+      const loserID = players[nextPlayerOrder(winner)]
       this.sessions[winnerID].onWin()
       this.sessions[loserID].onLose()
     }
@@ -69,7 +67,7 @@ class Game {
     }
     const { activePlayer } = state
     sessions[players[activePlayer]].onYourStep()
-    sessions[players[nextPlayer(activePlayer)]].onOpponentStep()
+    sessions[players[nextPlayerOrder(activePlayer)]].onOpponentStep()
   }
 }
 
