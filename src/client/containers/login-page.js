@@ -1,26 +1,54 @@
 import React from 'react'
+import styled from 'styled-components'
 import { connect } from 'react-redux'
-import { makeStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
-import Input from '@material-ui/core/Input'
-import Grid from '@material-ui/core/Grid'
-import Paper from '@material-ui/core/Paper'
-import Typography from '@material-ui/core/Typography'
+import Button from '../components/button'
+import Panel from '../components/panel'
+import ProgressBorder from '../components/progress-border'
+import TextInput from '../components/text-input'
 import { userNameChange } from '../actions'
 import { playGame } from '../../common/actions'
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    height: '100%'
-  },
-  paper: {
-    display: 'inline-block',
-    padding: theme.spacing(4, 6)
-  },
-  userName: {
-    width: '100%'
-  }
-}))
+const LoginPageGrid = styled.div`
+  display: grid;
+  height: 100%;
+  grid-template-rows: auto auto auto;
+  grid-template-columns: auto auto auto;
+  grid-template-areas:
+      'title title title'
+      '. login-form .'
+      '. . .';
+  justify-content: stretch;
+  align-content: stretch;
+`
+
+const LoginPageTitle = styled.h1`
+  margin: 0;
+  grid-area: title;
+`
+
+const LoginFormGrid = styled.div`
+  display: grid;
+  margin: 25px 25px;
+  grid-template-rows: auto auto;
+  grid-gap: 10px;
+  justify-items: center;
+`
+
+const LoginFormPanel = styled(Panel)`
+  grid-area: login-form;
+  justify-self: center;
+  align-self: center;
+`
+
+const LoginFormTitle = styled.h3`
+  margin: 0;
+  margin-bottom: 15px;
+  white-space: nowrap;
+`
+
+const LoginFormTextInput = styled(TextInput)`
+  text-align: center;
+`
 
 const LoginPage = (props) => {
   const handleUsernameChange = (e) => {
@@ -31,48 +59,24 @@ const LoginPage = (props) => {
     props.onPlay(props.username)
   }
 
-  const classes = useStyles()
-
   return (
-    <Grid
-      className={classes.root}
-      container
-      justify='center'
-      alignItems='center'
-    >
-      <Grid item>
-        <Paper className={classes.paper}>
-          <Grid
-            container
-            direction='column'
-            spacing={2}
-          >
-            <Grid item>
-              <Typography variant='h5'>
-                Please, introduce yourself
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Input
-                className={classes.userName}
-                placeholder='Your name'
-                defaultValue={props.username}
-                onChange={handleUsernameChange}
-              />
-            </Grid>
-            <Grid item>
-              <Button
-                variant='contained'
-                color='primary'
-                onClick={handleLogin}
-              >
-                Submit
-              </Button>
-            </Grid>
-          </Grid>
-        </Paper>
-      </Grid>
-    </Grid>
+    <LoginPageGrid>
+      <LoginPageTitle>Draughts online</LoginPageTitle>
+      <LoginFormPanel>
+        <LoginFormGrid>
+          <LoginFormTitle>Please, introduce yourself</LoginFormTitle>
+          <LoginFormTextInput
+            autoFocus
+            placeholder='Your name'
+            defaultValue={props.username}
+            onChange={handleUsernameChange}
+          />
+          <ProgressBorder>
+            <Button defaultValue='Submit' onClick={handleLogin}/>
+          </ProgressBorder>
+        </LoginFormGrid>
+      </LoginFormPanel>
+    </LoginPageGrid>
   )
 }
 

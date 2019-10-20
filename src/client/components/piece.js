@@ -1,53 +1,55 @@
 import React from 'react'
 import styled from 'styled-components'
 import Crown from './crown'
-import {
-  WHITE_PIECE_COLOR,
-  BLACK_PIECE_COLOR,
-  WHITE_PIECE_BORDER_COLOR,
-  BLACK_PIECE_BORDER_COLOR
-} from '../common/colors'
-import {
-  WHITE_MAN,
-  BLACK_MAN,
-  WHITE_KING,
-  BLACK_KING,
-  isKing
-} from '../../common/game/common'
+import { PIECE_COLORS } from '../common/colors'
+import { isKing } from '../../common/game/common'
 
-export const PIECE_COLORS = {
-  [WHITE_MAN]: { border: WHITE_PIECE_BORDER_COLOR, fill: WHITE_PIECE_COLOR },
-  [BLACK_MAN]: { border: BLACK_PIECE_BORDER_COLOR, fill: BLACK_PIECE_COLOR },
-  [WHITE_KING]: { border: WHITE_PIECE_BORDER_COLOR, fill: WHITE_PIECE_COLOR },
-  [BLACK_KING]: { border: BLACK_PIECE_BORDER_COLOR, fill: BLACK_PIECE_COLOR }
-}
-
-function boxShadow(color) {
-  return `0 0 10px 5px ${color}`
-}
-
-const Piece = ({ className, piece }) => (
-  <div className={className}>
+const Piece = ({ className, style, piece, onClick }) => (
+  <div className={className} style={style} onClick={onClick}>
     {isKing(piece) ? <Crown color={PIECE_COLORS[piece].border}/> : null}
   </div>
 )
 
 const StyledPiece = styled(Piece)`
+  /* @keyframes flash {
+    0% {
+      background-color: var(--white-cell-color);
+    }
+    100% {
+      background-color: var(--white-piece-color);
+    }
+  } */
+
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  width: 5vmin;
-  height: 5vmin;
+  width: 8vmin;
+  height: 8vmin;
   border-radius: 50%;
+  box-sizing: border-box;
   border-style: solid;
   border-width: 1vmin;
-  border-color: ${({ piece }) => PIECE_COLORS[piece].border};
-  background-color: ${({ piece }) => PIECE_COLORS[piece].fill};
+  transition:
+    transform 0.15s,
+    border-width 0.15s,
+    background-color 0.5s,
+    border-color 0.5s;
 
+  /* &:hover, &.selected {
+    transform: scale(1.2, 1.2);
+  } */
+  &:hover {
+    border-width: 0.5vmin;
+  }
+  /* &.selected {
+    animation: flash 1s;
+  } */
+  background-color: ${({ piece }) => PIECE_COLORS[piece].fill};
+  border-color: ${({ piece }) => PIECE_COLORS[piece].border};
   box-shadow: ${({ movable, selected }) =>
-    movable ? boxShadow('#16A8C7') :
-      selected ? boxShadow('#00cffb') : 'none'};
+    (selected || movable) && '0 0 6px 6px hsl(311, 87%, 47%)' || 'none'
+  };
 `
 
 export default StyledPiece

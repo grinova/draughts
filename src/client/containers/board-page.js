@@ -1,26 +1,58 @@
 import React from 'react'
+import styled from 'styled-components'
 import { connect } from 'react-redux'
-import { makeStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
-import Container from '@material-ui/core/Container'
-import Grid from '@material-ui/core/Grid'
-import Paper from '@material-ui/core/Paper'
+import Button from '../components/button'
 import Board from '../components/board'
 import Score from '../components/score'
 import { selectPiece } from '../actions'
 import { move, leave } from '../../common/actions'
-import { BLACK_MAN, getOrder, isOwnPiece } from '../../common/game/common'
+import {
+  BLACK_MAN,
+  getOrder,
+  getSide,
+  nextPlayerOrder,
+  isOwnPiece
+} from '../../common/game/common'
 
-const useStyles = makeStyles(theme => ({
-  root: {
-  },
-  info: {
-    height: '100%'
-  },
-  infoPaper: {
-    padding: theme.spacing(2, 2)
-  }
-}))
+const BoardPageContainer = styled.div`
+  display: flex;
+  height: 95vh;
+  justify-content: center;
+  align-items: center;
+`
+
+const BoardPageGrid = styled.div`
+  display: grid;
+  grid-template-rows: auto auto auto;
+  grid-template-columns: auto auto;
+  grid-template-areas:
+    'board opponent-score'
+    'board your-score'
+    'board leave';
+  grid-gap: 20px;
+`
+
+const BoardGridItem = styled(Board)`
+  grid-area: board;
+  justify-self: right;
+  align-self: center;
+`
+
+const OpponentScoreGridItem = styled(Score)`
+  grid-area: opponent-score;
+  justify-self: left;
+`
+
+const YourScoreGridItem = styled(Score)`
+  grid-area: your-score;
+  justify-self: left;
+`
+
+const LeaveButtonGridItem = styled.div`
+  grid-area: leave;
+  align-self: end;
+  justify-self: left;
+`
 
 const BoardPage = (props) => {
   const handleCellOnClick = (pos) => {
@@ -40,49 +72,33 @@ const BoardPage = (props) => {
     props.onLeave()
   }
 
-  const classes = useStyles()
+  const { info } = props
+  const playerOrder = getOrder(info.side)
+  const opponentOrder = nextPlayerOrder(playerOrder)
+  const opponentSide = getSide(opponentOrder)
 
   return (
-    <Container>
-      <Grid
-        className={classes.root}
-        container
-        justify='center'
-        alignContent='center'
-        spacing={2}
-      >
-        <Grid item>
-          <Paper>
-            <Board
-              reverse={props.reverse}
-              data={props.boardData}
-              onClick={handleCellOnClick}/>
-          </Paper>
-        </Grid>
-        <Grid item>
-          <Grid container
-            className={classes.info}
-            direction='column'
-            justify='space-between'
-            alignItems='center'
-            spacing={2}
-          >
-            <Grid item>
-              <Score>{props.info}</Score>
-            </Grid>
-            <Grid item>
-              <Button
-                variant='contained'
-                color='primary'
-                onClick={handleLeave}
-              >
-                Leave
-              </Button>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
-    </Container>
+    <BoardPageContainer>
+      <BoardPageGrid>
+          <BoardGridItem
+            reverse={props.reverse}
+            data={props.boardData}
+            onClick={handleCellOnClick}/>
+          <OpponentScoreGridItem
+            playerName={info.players[opponentOrder]}
+            score={info.score[opponentOrder]}
+            side={info.side}
+          />
+          <YourScoreGridItem
+            playerName={info.players[playerOrder]}
+            score={info.score[playerOrder]}
+            side={opponentSide}
+          />
+          <LeaveButtonGridItem>
+            <Button defaultValue='Leave' onClick={handleLeave}/>
+          </LeaveButtonGridItem>
+      </BoardPageGrid>
+    </BoardPageContainer>
   )
 }
 

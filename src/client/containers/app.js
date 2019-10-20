@@ -1,17 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Switch, Route, withRouter } from 'react-router-dom'
-import { createGlobalStyle } from 'styled-components'
 import LoginPage from './login-page'
 import BoardPage from './board-page'
+import GlobalStyles from '../components/global-styles'
 import { ROUTES } from '../config'
 import { DEFAULT, PLAY } from '../../common/state'
-
-const GlobalStyles = createGlobalStyle`
-  body {
-    background-color: #cdcdcd;
-  }
-`
 
 class App extends React.Component {
   componentDidUpdate(prevProps) {
