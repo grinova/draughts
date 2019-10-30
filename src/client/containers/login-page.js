@@ -7,6 +7,7 @@ import ProgressBorder from '../components/progress-border'
 import TextInput from '../components/text-input'
 import { userNameChange } from '../actions'
 import { playGame } from '../../common/actions'
+import { STAND_BY } from '../../common/state'
 
 const LoginPageGrid = styled.div`
   display: grid;
@@ -71,7 +72,7 @@ const LoginPage = (props) => {
             defaultValue={props.username}
             onChange={handleUsernameChange}
           />
-          <ProgressBorder>
+          <ProgressBorder active={props.standby}>
             <Button defaultValue='Submit' onClick={handleLogin}/>
           </ProgressBorder>
         </LoginFormGrid>
@@ -82,7 +83,8 @@ const LoginPage = (props) => {
 
 function mapStateToProps(state) {
   const { username } = state
-  return { username }
+  const standby = state.state == STAND_BY
+  return { username, standby }
 }
 
 function mapDispatchToProps(dispatch) {

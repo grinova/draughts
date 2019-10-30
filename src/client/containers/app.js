@@ -10,9 +10,9 @@ import { DEFAULT, PLAY } from '../../common/state'
 class App extends React.Component {
   componentDidUpdate(prevProps) {
     const { history, state } = this.props
-    if (prevProps.state == DEFAULT && state == PLAY) {
+    if (prevProps.state != PLAY && state == PLAY) {
       history.push(ROUTES.BOARD)
-    } else if (prevProps.state == PLAY && state == DEFAULT) {
+    } else if (prevProps.state != DEFAULT && state == DEFAULT) {
       history.push(ROUTES.HOME)
     }
   }

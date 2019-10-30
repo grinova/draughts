@@ -1,3 +1,5 @@
+const { STAND_BY } = require('../../common/state')
+
 class Session {
   constructor(id, username, /* status, meta,  */game, store, notifier, remove) {
     this.id = id
@@ -31,7 +33,7 @@ class Session {
       await this.store.updateSessionStatus(this.id, 'active')
       await this.store.joinGame(this.id, this.game.id)
     } else {
-      this.store.updateSessionStatus(this.id, 'stand-by')
+      this.store.updateSessionStatus(this.id, STAND_BY)
       this.notifier.wait()
     }
   }

@@ -1,5 +1,5 @@
 const actions = require('../../common/actions')
-const { DEFAULT, PLAY } = require('../../common/state')
+const { DEFAULT, STAND_BY, PLAY } = require('../../common/state')
 
 class SocketNotifier {
   constructor(socket) {
@@ -8,6 +8,7 @@ class SocketNotifier {
 
   wait() {
     this.emit(actions.log('waiting'))
+    this.emit(actions.state(STAND_BY))
   }
 
   gameInfo(gameInfo) {
