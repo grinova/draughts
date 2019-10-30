@@ -19,6 +19,10 @@ const BoardPageContainer = styled.div`
   height: 95vh;
   justify-content: center;
   align-items: center;
+
+  @media ${({ theme }) => theme.media.mobile} {
+    height: initial;
+  }
 `
 
 const BoardPageGrid = styled.div`
@@ -30,17 +34,37 @@ const BoardPageGrid = styled.div`
     'board your-score'
     'board leave';
   grid-gap: 20px;
+
+  @media ${({ theme }) => theme.media.mobile} {
+    grid-template-rows: auto auto auto;
+    grid-template-columns: auto auto;
+    grid-template-areas:
+      'your-score opponent-score'
+      'board board'
+      'leave leave';
+    justify-content: space-between;
+    width: 100%;
+  }
 `
 
 const BoardGridItem = styled(Board)`
   grid-area: board;
   justify-self: right;
   align-self: center;
+
+  @media ${({ theme }) => theme.media.mobile} {
+    justify-self: center;
+  }
 `
 
 const OpponentScoreGridItem = styled(Score)`
   grid-area: opponent-score;
   justify-self: left;
+
+  @media ${({ theme }) => theme.media.mobile} {
+    text-align: right;
+    justify-self: right;
+  }
 `
 
 const YourScoreGridItem = styled(Score)`
@@ -52,6 +76,10 @@ const LeaveButtonGridItem = styled.div`
   grid-area: leave;
   align-self: end;
   justify-self: left;
+
+  @media ${({ theme }) => theme.media.mobile} {
+    justify-self: center;
+  }
 `
 
 const BoardPage = (props) => {

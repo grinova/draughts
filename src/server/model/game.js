@@ -21,9 +21,8 @@ class Game {
     this.notify()
     const { state, players } = this
     const { activePlayer } = state
-    let playersNames = players.map(id => this.sessions[id].getUserName())
+    const playersNames = players.map(id => this.sessions[id].getUserName())
     this.sessions[players[activePlayer]].onGameInfo({ side: WHITE_MAN, players: playersNames })
-    playersNames = playersNames.slice().reverse()
     this.sessions[players[nextPlayerOrder(activePlayer)]].onGameInfo({ side: BLACK_MAN, players: playersNames })
   }
 
