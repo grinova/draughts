@@ -10,14 +10,15 @@ const SocketNotifier = require('./notifiers/socket')
 const Store = require('./store')
 
 const PORT = process.env.PORT || 8080
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/default'
 
 ;(async function() {
   const client = await mongodb.MongoClient.connect(
-    'mongodb://localhost:27017',
+    MONGODB_URI,
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
 
-  const db = client.db('checkers')
+  const db = client.db('')
   const store = new Store(db)
   {
     await db.collection('sessions').deleteMany({})
