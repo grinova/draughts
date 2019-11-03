@@ -62,7 +62,7 @@ const LoginPage = (props) => {
 
   return (
     <LoginPageGrid>
-      <LoginPageTitle>Draughts online</LoginPageTitle>
+      <LoginPageTitle>Draughts</LoginPageTitle>
       <LoginFormPanel>
         <LoginFormGrid>
           <LoginFormTitle>Please, introduce yourself</LoginFormTitle>
