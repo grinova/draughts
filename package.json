@@ -1,7 +1,11 @@
 {
-  "name": "web-checkers",
+  "name": "draughts",
   "version": "0.0.0",
-  "description": "",
+  "description": "Checkers online game",
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/grinova/draughts"
+  },
   "main": "index.js",
   "scripts": {
     "build:client": "webpack",
