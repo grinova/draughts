@@ -1,11 +1,9 @@
-var path = require('path')
+const path = require('path')
 
 const srcDir = path.resolve(__dirname, 'src', 'client')
 const distDir = path.resolve(__dirname, 'static')
 
-module.exports = {
-  mode: 'development',
-  devtool: 'source-map',
+const common = {
   entry: path.join(srcDir, 'index.js'),
   module: {
     rules: [
@@ -20,4 +18,18 @@ module.exports = {
     path: distDir,
     filename: 'index.js'
   }
+}
+
+const development = {
+  mode: 'development',
+  devtool: 'source-map'
+}
+
+const production = {
+  mode: 'production',
+}
+
+module.exports = {
+  ...common,
+  ...(process.env.NODE_ENV == 'production' && production || development)
 }
