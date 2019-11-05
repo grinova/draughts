@@ -1,0 +1,8 @@
+.git
+.vscode
+.dockerignore
+.gitignore
+node_modules
+Procfile
+static/index.js
+static/index.js.map

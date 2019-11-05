@@ -1,0 +1,23 @@
+version: '3.3'
+services:
+  web:
+    build: .
+    ports:
+      - '8080:8080'
+    environment:
+      PORT: 8080
+      MONGODB_URI: 'mongodb://db:27017/default'
+    depends_on:
+      - db
+  db:
+    image: 'mongo'
+    volumes:
+      - type: volume
+        source: db
+        target: /data/db
+      - type: volume
+        source: configdb
+        target: /data/configdb
+volumes:
+  db:
+  configdb:
