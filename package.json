@@ -10,9 +10,9 @@
   "scripts": {
     "pack": "webpack",
     "babel": "babel src/client -d src/views",
-    "build:client": "npm run pack && npm run babel",
+    "build": "npm run pack && npm run babel",
     "start": "node ./src/server/app.js",
-    "heroku-postbuild": "npm run build:client"
+    "heroku-postbuild": "npm run build"
   },
   "keywords": [],
   "author": "",
