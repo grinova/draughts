@@ -1,21 +1,17 @@
 import React from 'react'
-import { render } from 'react-dom'
-import { Provider } from 'react-redux'
-import { BrowserRouter as Router } from 'react-router-dom'
-import App from './containers/app'
-import Theme from './components/theme'
-import configureStore from './store'
+import { hydrate } from 'react-dom'
+import { BrowserRouter } from 'react-router-dom'
+import configureStore from './store/client'
+import Root from './root'
 
-const store = configureStore()
+const state = window.__STATE__
+delete window.__STATE__
+const store = configureStore(state)
 
-render(
-  <Provider store={store}>
-    <Router>
-      <Theme>
-        <App/>
-      </Theme>
-    </Router>
-  </Provider>,
+hydrate(
+  <BrowserRouter>
+    <Root store={store}/>
+  </BrowserRouter>,
   document.getElementById('root')
 )
 

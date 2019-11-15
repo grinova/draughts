@@ -1,4 +1,5 @@
 node_modules
+src/views
 package-lock.json
 static/index.js
 static/index.js.map

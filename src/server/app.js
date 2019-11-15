@@ -8,6 +8,8 @@ const createManagers = require('./managers')
 const Player = require('./model/player')
 const SocketNotifier = require('./notifiers/socket')
 const Store = require('./store')
+const ssr = require('../views/ssr')
+const template = require('../views/template')
 
 const PORT = process.env.PORT || 8080
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/default'
@@ -30,8 +32,11 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/defaul
   const io = socket(server)
 
   server.listen(PORT)
-  app.use('/index.html', (req, res) => res.redirect('/'))
   app.use(express.static('static'))
+  app.use(/^\/$/, (req, res) => {
+    const { state, content, styleTags } = ssr()
+    res.send(template(state, content, styleTags))
+  })
   app.use('*', (req, res) => res.redirect('/'))
 
   const notifiers = {}
